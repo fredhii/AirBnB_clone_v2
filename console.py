@@ -124,8 +124,8 @@ class HBNBCommand(cmd.Cmd):
                     attr = i.split('=')
                     if hasattr(new_obj, attr[0]):
                         value = attr[1].replace('_', ' ')
-                        setattr(new_obj, attr[0], attr[1][1:-1]
-                                if attr[1][0] == '\"' else attr[1])
+                        setattr(new_obj, attr[0], value[1:-1]
+                                if value[0] == '\"' else value)
                     else:
                         continue
 
