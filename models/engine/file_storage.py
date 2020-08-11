@@ -14,7 +14,6 @@ class FileStorage:
             return self.__objects
         dictionary = {}
         for key, value in self.__objects.items():
-            print(self.__objects)
             if cls.__name__ in key:
                 dictionary[key] = value
         return dictionary
