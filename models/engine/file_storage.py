@@ -12,6 +12,7 @@ class FileStorage:
         """ Returns a dictionary of models currently in storage """
         if cls is None:
             return self.__objects
+        dictionary = {}
         for key, value in self.__objects.items():
             if cls.__name__ in key:
                 dictionary[key] = value
