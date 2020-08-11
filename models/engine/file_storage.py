@@ -57,7 +57,6 @@ class FileStorage:
 
     def delete(self, obj=None):
         """ Deletes object if it is inside __objects """
-        print(self.__objects.keys())
         if obj:
             key = "{}.{}".format(obj.__class__.__name__, obj.id)
             if key in self.__objects.keys():
