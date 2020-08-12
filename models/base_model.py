@@ -7,6 +7,7 @@ from datetime import datetime
 
 Base = declarative_base()
 
+
 class BaseModel:
     """A base class for all hbnb models"""
     ''' attributes of table '''
@@ -22,22 +23,21 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
         else:
+            del kwargs['__class__']
             kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
             kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
-            del kwargs['__class__']
-            ''' If some key is different of the dates, the key and
-            value will be setted as attribute '''
             for key, value in kwargs.items():
-                if key != 'created_at' and key != 'updated_at':
-                    setattr(self, key, value)
-            self.__dict__.update(kwargs)
+                setattr(self, key, value)
+
+            if id is not kwargs:
+                self.id = str(uuid.uuid4())
 
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        return '[{}] ({}) {}'.format(cls, self.id, self.to_dict())
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
@@ -48,8 +48,7 @@ class BaseModel:
 
     def to_dict(self):
         """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
+        dictionary = dict(self.__dict__)
         if '_sa_instance_state' in dictionary:
             del dictionary['_sa_instance_state']
         dictionary.update({'__class__':

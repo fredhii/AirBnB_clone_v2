@@ -5,6 +5,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import scoped_session
 from sqlalchemy import MetaData
+from models.city import City
+from models.place import Place
+from models.state import State
+from models.user import User
+from models.review import Review
+from models.amenity import Amenity
+from models.base_model import BaseModel, Base
 
 
 class DBStorage:
@@ -44,33 +51,25 @@ class DBStorage:
     def all(self, cls=None):
         ''' return dictionary with every objects '''
         session = self.__session
-        classes = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+        classes = [User, State, City, Amenity, Place, Review]
         dictionary = {}
         if cls is None:
             for cls in classes:
-                query = session.query(eval(cls)).all()
+                query = session.query(cls).all()
                 for instance in query:
-                    key = '{}.{}'.format(intance.__class__.__name__,
+                    key = '{}.{}'.format(instance.__class__.__name__,
                                          instance.id)
                     dictionary[key] = instance
-
         else:
             query = session.query(eval(cls)).all()
             for instance in query:
-                key = '{}.{}'.format(intance.__class__.__name__,
+                key = '{}.{}'.format(instance.__class__.__name__,
                                      instance.id)
                 dictionary[key] = instance
         return dictionary
 
     def reload(self):
         ''' reload info '''
-        from models.city import City
-        from models.place import Place
-        from models.state import State
-        from models.user import User
-        from models.review import Review
-        from models.amenity import Amenity
-        from models.base_model import BaseModel, Base
         Base.metadata.create_all(self.__engine)
         session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         session = scoped_session(session)

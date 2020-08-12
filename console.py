@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -116,21 +117,21 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, line):
         ''' Create an instance of specific class '''
         if line:
-            try:
-                args = line.split()
-                new_obj = eval(args[0])()
-                for i in args:
-                    attr = i.split('=')
-                    if hasattr(new_obj, attr[0]):
-                        value = attr[1].replace('_', ' ')
-                        setattr(new_obj, attr[0], value[1:-1]
-                                if value[0] == '\"' else value)
-                    else:
-                        continue
-                    print(new_obj.id)
-                    new_obj.save()
-            except Exception:
+            args = line.split()
+            if args[0] not in HBNBCommand.classes:
                 print('** class doesn\'t exist **')
+                return
+            new_obj = eval(args[0])()
+            for i in args:
+                attr = i.split('=')
+                if hasattr(new_obj, attr[0]):
+                    value = attr[1].replace('_', ' ')
+                    setattr(new_obj, attr[0], value[1:-1]
+                            if value[0] == '\"' else value)
+                else:
+                    continue
+            print(new_obj.id)
+            new_obj.save()
         else:
             print('** class name missing **')
 
@@ -214,13 +215,13 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+            dictionary = storage.all(args)
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
+            dictionary = storage.all()
 
+        for k, v in dictionary.items():
+            if k.split('.')[0] == args:
+                print_list.append(str(v))
         print(print_list)
 
     def help_all(self):

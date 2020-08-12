@@ -13,7 +13,7 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
     ''' sql '''
     cities = relationship("City", backref="state", cascade='all, delete')
-    
+
     # ''' file storage '''
     # cities = []
     # instance = models.storage.all(City)
