@@ -119,7 +119,6 @@ class HBNBCommand(cmd.Cmd):
             try:
                 args = line.split()
                 new_obj = eval(args[0])()
-
                 for i in args:
                     attr = i.split('=')
                     if hasattr(new_obj, attr[0]):
@@ -128,9 +127,8 @@ class HBNBCommand(cmd.Cmd):
                                 if value[0] == '\"' else value)
                     else:
                         continue
-
-                print(new_obj.id)
-                new_obj.save()
+                    print(new_obj.id)
+                    new_obj.save()
             except Exception:
                 print('** class doesn\'t exist **')
         else:
