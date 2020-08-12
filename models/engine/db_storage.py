@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 ''' Class to stablish conection with the DB '''
-import so
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData
@@ -14,17 +14,15 @@ class DBStorage:
 
     def __init__(self):
         ''' get environment variables '''
-        user = so.getenv('HBNB_MYSQL_USER')
-        pasw = so.getenv('HBNB_MYSQL_PWD')
-        host = so.getenv('HBNB_MYSQL_HOST')
-        db = so.getenv('HBNB_MYSQL_DB')
-        name = so.getenv('HBNB_ENV')
+        user = os.getenv('HBNB_MYSQL_USER')
+        pasw = os.getenv('HBNB_MYSQL_PWD')
+        host = os.getenv('HBNB_MYSQL_HOST')
+        db = os.getenv('HBNB_MYSQL_DB')
+        name = os.getenv('HBNB_ENV')
 
         ''' setting engine '''
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
                                       .format(user, pasw, host, db), pool_pre_ping=True)
-        Base.metadata.create_all(engine)
-        self.__session = sessionmaker(bind=self.__engine)()
         if name == 'test':
             meta = MetaData(self.__engine)
             meta.drop_all()
@@ -66,9 +64,13 @@ class DBStorage:
 
     def reload(self):
         ''' reload info '''
+        import models.city import City
+        import models.place import Place
+        import models.State import State
+        import models.User import User
+        import models.review import Review
+        import models.Amenity import Amenity
         Base.metadata.create_all(self.__engine)
         session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         session = scoped_session(session)
-        
-        
-
+        self.__session = session
