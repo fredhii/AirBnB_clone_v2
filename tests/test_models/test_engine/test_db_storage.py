@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+""" Module for testing file storage"""
 import unittest
 import models
 from models.base_model import BaseModel, Base
@@ -16,8 +16,9 @@ from sqlalchemy.orm import sessionmaker
 
 @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
                  "only testing db storage")
-class test_DBStorage(unittest.TestCase):
 
+class test_DBStorage(unittest.TestCase):
+    """ Class to test the file storage method """
     def testState(self):
         state = State(name="Greg")
         if state.id in models.storage.all():
