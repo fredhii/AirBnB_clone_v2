@@ -6,6 +6,7 @@ import os
 
 
 def make_dir(routing, name_pack):
+    ''' create directory and package '''
     with hide('running'):
         local('mkdir -p versions')
     local('tar -cvzf {} {}'.format(routing, name_pack))
@@ -15,6 +16,7 @@ def make_dir(routing, name_pack):
 
 
 def do_pack():
+    ''' print every message '''
     try:
         name_pack = 'web_static'
         routing = 'versions/web_static_{}.tgz'.\
