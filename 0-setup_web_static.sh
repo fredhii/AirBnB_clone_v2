@@ -24,5 +24,5 @@ sudo chown -R ubuntu:ubuntu /data/
 #routing to web static
 sudo sed -i "s/server_name _;/server_name _;\n\n\tlocation \/hbnb_static\/ {\n\t\t alias \/data\/web_static\/current\/;\n\t}/" /etc/nginx/sites-available/default
 
-#start nginx
-sudo service nginx start
+#restart nginx
+sudo service nginx restart
