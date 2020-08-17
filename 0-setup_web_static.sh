@@ -19,7 +19,7 @@ sudo ln -sfn /data/web_static/releases/test/ /data/web_static/current
 sudo chown -R ubuntu:ubuntu /data
 
 #routing to web static
-sudo sed -i "s/server_name _;/server_name _;\n\n\tlocation \/hbnb_static\/ {\n\t\t alias \/data\/web_static\/current\/;\n\t}/" /etc/nginx/sites-available/default
+sudo sed -i "/server_name _;/a location \/hbnb_static\/ {\n\t\t alias \/data\/web_static\/current\/;\n\t}/" /etc/nginx/sites-available/default
 
 #restart nginx
 sudo service nginx restart
