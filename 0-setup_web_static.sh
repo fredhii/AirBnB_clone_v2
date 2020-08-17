@@ -13,7 +13,7 @@ sudo mkdir -p /data/web_static/shared/
 sudo mkdir -p /data/web_static/releases/test/
 
 #Creating index test
-echo "This is a index test" > /data/web_static/releases/test/index.html
+echo "Holberton School" > /data/web_static/releases/test/index.html
 
 #simbolic link 
 sudo ln -sfn /data/web_static/releases/test/ /data/web_static/current 
