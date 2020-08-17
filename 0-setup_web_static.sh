@@ -16,7 +16,7 @@ sudo mkdir -p /data/web_static/releases/test/
 echo "This is a index test" > /data/web_static/releases/test/index.html
 
 #simbolic link 
-sudo ln -sf /data/web_static/releases/test/ /data/web_static/current 
+sudo ln -sfn /data/web_static/releases/test/ /data/web_static/current 
 
 #ownership and group
 sudo chown -R ubuntu:ubuntu /data/
