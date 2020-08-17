@@ -13,13 +13,13 @@ sudo mkdir -p /data/web_static/releases/test/
 echo "Holberton School" > /data/web_static/releases/test/index.html
 
 #simbolic link 
-sudo ln -sfn /data/web_static/releases/test/ /data/web_static/current 
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current 
 
 #ownership and group
 sudo chown -R ubuntu:ubuntu /data
 
 #routing to web static
-sudo sed -i "/server_name _;/a location \/hbnb_static\/ {\n\t\t alias \/data\/web_static\/current\/;\n\t}/" /etc/nginx/sites-available/default
+sudo sed -i '/listen 80 default_server;/a location /hbnb_static/ { alias /data/web_static/current/; }' /etc/nginx/sites-available/default
 
 #restart nginx
 sudo service nginx restart
