@@ -53,6 +53,7 @@ def do_deploy(archive_path):
 
 
 def deploy():
+    ''' Real deploy '''
     path = do_pack()
     if path is None:
         return False
