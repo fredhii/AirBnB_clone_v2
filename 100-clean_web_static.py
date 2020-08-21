@@ -59,12 +59,13 @@ def deploy():
         return False
     return (do_deploy(path))
 
+
 def do_clean(number=0):
     """ Deletes out-of-date archives """
 
     try:
         number = int(number)
-    except:
+    except Exception:
         return None
 
     if number < 0:
