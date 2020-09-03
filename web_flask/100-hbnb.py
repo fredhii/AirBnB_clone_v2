@@ -7,14 +7,14 @@ from flask import render_template
 app = Flask(__name__)
 
 
-@app.route("/cities_by_states", strict_slashes=False)
-def cities_by_states():
-    """Displays an HTML page with a list of all states and related cities.
-
-    States/cities are sorted by name.
-    """
+@app.route("/hbnb", strict_slashes=False)
+def hbnb():
+    """Displays the main HBnB filters HTML page."""
     states = storage.all("State")
-    return render_template("8-cities_by_states.html", states=states)
+    amenities = storage.all("Amenity")
+    places = storage.all("Place")
+    return render_template("100-hbnb.html",
+                           states=states, amenities=amenities, places=places)
 
 
 @app.teardown_appcontext

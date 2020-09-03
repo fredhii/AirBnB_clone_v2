@@ -1,82 +1,30 @@
 #!/usr/bin/python3
-''' make a tgz archive '''
-from fabric.api import *
-from datetime import datetime
+# Fabfile to delete out-of-date archives.
 import os
+from fabric.api import *
 
-env.hosts = ['34.74.22.156', '34.74.179.134']
-
-
-def make_dir(routing, name_pack):
-    ''' create directory and package '''
-    with hide('running'):
-        local('mkdir -p versions')
-    local('tar -cvzf {} {}'.format(routing, name_pack))
-    with hide('running'):
-        size = local('stat -c %s ./{}'.format(routing), capture=True)
-    return size
-
-
-def do_pack():
-    ''' print every message '''
-    try:
-        name_pack = 'web_static'
-        routing = 'versions/web_static_{}.tgz'.\
-                  format(datetime.now().strftime('%Y%m%d%H%M%S'))
-        init = 'Packing {} to {}'.format(name_pack, routing)
-        print(init)
-        size = make_dir(routing, name_pack)
-        print('{} packed: {} -> {}'.format(name_pack, routing, size))
-        return '{}/{}'.format(os.getenv('PWD'), routing)
-    except Exception:
-        return None
-
-
-def do_deploy(archive_path):
-    ''' deploy '''
-    if os.path.isfile(archive_path):
-        name = archive_path.split('/')[-1]
-        put(archive_path, '/tmp/{}'.format(name))
-        run('mkdir -p /data/web_static/releases/{}/'.format(name))
-        run('tar -xzf /tmp/{0} -C /data/web_static/releases/{0}/'.format(name))
-        run('rm /tmp/{}'.format(name))
-        run('mv /data/web_static/releases/{0}/web_static/*\
-        /data/web_static/releases/{0}/'.format(name))
-        run('rm -rf /data/web_static/releases/{}/web_static'.format(name))
-        run('rm -rf /data/web_static/current')
-        run('ln -s /data/web_static/releases/{}/ /data/web_static/current'.
-            format(name))
-        print('New version deployed!')
-        return True
-    else:
-        return False
-
-
-def deploy():
-    ''' Real deploy '''
-    path = do_pack()
-    if path is None:
-        return False
-    return (do_deploy(path))
+env.hosts = ["104.196.168.90", "35.196.46.172"]
 
 
 def do_clean(number=0):
-    """ Deletes out-of-date archives """
+    """Delete out-of-date archives.
 
-    try:
-        number = int(number)
-    except Exception:
-        return None
+    Args:
+        number (int): The number of archives to keep.
 
-    if number < 0:
-        return None
+    If number is 0 or 1, keeps only the most recent archive. If
+    number is 2, keeps the most and second-most recent archives,
+    etc.
+    """
+    number = 1 if int(number) == 0 else int(number)
 
-    number = 2 if (number == 0 or number == 1) else (number + 1)
-
-    with lcd("./versions"):
-        local('ls -t | tail -n +{:d} | xargs rm -rf --'.
-              format(number))
+    archives = sorted(os.listdir("versions"))
+    [archives.pop() for i in range(number)]
+    with lcd("versions"):
+        [local("rm ./{}".format(a)) for a in archives]
 
     with cd("/data/web_static/releases"):
-        run('ls -t | tail -n +{:d} | xargs rm -rf --'.
-            format(number))
+        archives = run("ls -tr").split()
+        archives = [a for a in archives if "web_static_" in a]
+        [archives.pop() for i in range(number)]
+        [run("rm -rf ./{}".format(a)) for a in archives]

@@ -1,30 +1,22 @@
 #!/usr/bin/python3
-''' make a tgz archive '''
-from fabric.api import *
+# Fabfile to generates a .tgz archive from the contents of web_static.
+import os.path
 from datetime import datetime
-import os
-
-
-def make_dir(routing, name_pack):
-    ''' create directory and package '''
-    with hide('running'):
-        local('mkdir -p versions')
-    local('tar -cvzf {} {}'.format(routing, name_pack))
-    with hide('running'):
-        size = local('stat -c %s ./{}'.format(routing), capture=True)
-    return size
+from fabric.api import local
 
 
 def do_pack():
-    ''' print every message '''
-    try:
-        name_pack = 'web_static'
-        routing = 'versions/web_static_{}.tgz'.\
-                  format(datetime.now().strftime('%Y%m%d%H%M%S'))
-        init = 'Packing {} to {}'.format(name_pack, routing)
-        print(init)
-        size = make_dir(routing, name_pack)
-        print('{} packed: {} -> {}'.format(name_pack, routing, size))
-        return '{}/{}'.format(os.getenv('PWD'), routing)
-    except Exception:
+    """Create a tar gzipped archive of the directory web_static."""
+    dt = datetime.utcnow()
+    file = "versions/web_static_{}{}{}{}{}{}.tgz".format(dt.year,
+                                                         dt.month,
+                                                         dt.day,
+                                                         dt.hour,
+                                                         dt.minute,
+                                                         dt.second)
+    if os.path.isdir("versions") is False:
+        if local("mkdir -p versions").failed is True:
+            return None
+    if local("tar -cvzf {} web_static".format(file)).failed is True:
         return None
+    return file
